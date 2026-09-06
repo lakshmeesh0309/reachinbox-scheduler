@@ -9,17 +9,21 @@ export const config = {
 
   // PostgreSQL
   db: {
+    url: process.env.DATABASE_URL || "",
     host: process.env.DB_HOST || "localhost",
     port: parseInt(process.env.DB_PORT || "5432", 10),
     user: process.env.DB_USER || "reachinbox",
     password: process.env.DB_PASSWORD || "reachinbox_secret",
     name: process.env.DB_NAME || "reachinbox",
+    ssl: process.env.DB_SSL === "true" || (process.env.NODE_ENV === "production" && !process.env.DB_HOST?.includes("localhost")),
   },
 
   // Redis
   redis: {
+    url: process.env.REDIS_URL || "",
     host: process.env.REDIS_HOST || "localhost",
     port: parseInt(process.env.REDIS_PORT || "6379", 10),
+    password: process.env.REDIS_PASSWORD || undefined,
   },
 
   // Elasticsearch

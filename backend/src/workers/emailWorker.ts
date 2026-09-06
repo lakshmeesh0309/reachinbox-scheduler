@@ -262,11 +262,17 @@ export function createEmailWorker(): Worker<EmailJobData, EmailJobResult> {
       throw new Error(`SMTP send failed: ${failureReason}`);
     },
     {
-      connection: {
-        host: config.redis.host,
-        port: config.redis.port,
-        maxRetriesPerRequest: null,
-      },
+      connection: config.redis.url
+        ? {
+            url: config.redis.url,
+            maxRetriesPerRequest: null,
+          }
+        : {
+            host: config.redis.host,
+            port: config.redis.port,
+            password: config.redis.password,
+            maxRetriesPerRequest: null,
+          },
       concurrency: config.worker.concurrency,
     }
   );

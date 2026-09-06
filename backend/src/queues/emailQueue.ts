@@ -17,11 +17,17 @@ import type { EmailJobData, EmailJobResult } from "../types/job";
 export const emailQueue = new Queue<EmailJobData, EmailJobResult>(
   EMAIL_QUEUE_NAME,
   {
-    connection: {
-      host: config.redis.host,
-      port: config.redis.port,
-      maxRetriesPerRequest: null, // Required by BullMQ
-    },
+    connection: config.redis.url
+      ? {
+          url: config.redis.url,
+          maxRetriesPerRequest: null,
+        }
+      : {
+          host: config.redis.host,
+          port: config.redis.port,
+          password: config.redis.password,
+          maxRetriesPerRequest: null,
+        },
     defaultJobOptions: {
       attempts: 3,
       backoff: {

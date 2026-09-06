@@ -38,12 +38,18 @@ let rateLimiterRedisClient: Redis | null = null;
 
 export function getRateLimiterRedis(): Redis {
   if (!rateLimiterRedisClient) {
-    rateLimiterRedisClient = new Redis({
-      host: config.redis.host,
-      port: config.redis.port,
-      maxRetriesPerRequest: null,
-      lazyConnect: true,
-    });
+    rateLimiterRedisClient = config.redis.url
+      ? new Redis(config.redis.url, {
+          maxRetriesPerRequest: null,
+          lazyConnect: true,
+        })
+      : new Redis({
+          host: config.redis.host,
+          port: config.redis.port,
+          password: config.redis.password,
+          maxRetriesPerRequest: null,
+          lazyConnect: true,
+        });
 
     rateLimiterRedisClient.on("error", (err) => {
       console.error("[rateLimiter] Redis connection error:", err.message);
